@@ -119,14 +119,18 @@ nav.scrolled {
 }
 
 .logo {
-  font-family: var(--font-display);
-  font-size: 26px;
-  font-weight: 800;
-  letter-spacing: -0.5px;
-  color: var(--text-primary);
+  display: flex;
+  align-items: center;
 }
 
-.logo span { color: var(--cyan); }
+.logo-svg {
+  height: 32px;
+  width: auto;
+}
+
+.footer-logo .logo-svg {
+  height: 28px;
+}
 
 .nav-links {
   display: flex;
@@ -649,12 +653,9 @@ footer {
 }
 
 .footer-logo {
-  font-family: var(--font-display);
-  font-size: 22px;
-  font-weight: 800;
+  display: flex;
+  align-items: center;
 }
-
-.footer-logo span { color: var(--cyan); }
 
 .footer-info {
   font-size: 13px;
@@ -774,7 +775,14 @@ footer {
   <!-- ═══ NAVIGATION ═══ -->
   <nav id="navbar">
     <div class="nav-inner">
-      <div class="logo">Code<span>ENN</span></div>
+      <a href="#" class="logo">
+        <svg class="logo-svg" viewBox="0 0 220 40" xmlns="http://www.w3.org/2000/svg">
+          <polyline points="14,6 2,20 14,34" fill="none" stroke="#22d3ee" stroke-width="4.5" stroke-linecap="round" stroke-linejoin="round"/>
+          <text x="22" y="30" font-family="'Outfit', sans-serif" font-size="30" font-weight="800" letter-spacing="-1">
+            <tspan fill="#e8ecf4">C</tspan><tspan fill="#22d3ee">o</tspan><tspan fill="#e8ecf4">de</tspan><tspan fill="#e8ecf4" font-weight="900">ENN</tspan>
+          </text>
+        </svg>
+      </a>
       <ul class="nav-links" id="navLinks">
         <li><a href="#servicos">Serviços</a></li>
         <li><a href="#processo">Processo</a></li>
@@ -944,7 +952,14 @@ footer {
   <footer>
     <div class="container">
       <div class="footer-inner">
-        <div class="footer-logo">Code<span>ENN</span></div>
+        <div class="footer-logo">
+          <svg class="logo-svg" viewBox="0 0 220 40" xmlns="http://www.w3.org/2000/svg">
+            <polyline points="14,6 2,20 14,34" fill="none" stroke="#22d3ee" stroke-width="4.5" stroke-linecap="round" stroke-linejoin="round"/>
+            <text x="22" y="30" font-family="'Outfit', sans-serif" font-size="30" font-weight="800" letter-spacing="-1">
+              <tspan fill="#e8ecf4">C</tspan><tspan fill="#22d3ee">o</tspan><tspan fill="#e8ecf4">de</tspan><tspan fill="#e8ecf4" font-weight="900">ENN</tspan>
+            </text>
+          </svg>
+        </div>
         <div class="footer-info">
           &copy; 2026 CodeENN &middot; CNPJ: 63.721.800/0001-11 &middot; Todos os direitos reservados.
         </div>
