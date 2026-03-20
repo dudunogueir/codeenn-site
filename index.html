@@ -1,0 +1,992 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CodeENN — Desenvolvimento e Consultoria em TI</title>
+<meta name="description" content="CodeENN: Soluções de software sob medida, aplicações móveis e consultoria estratégica em TI para impulsionar o seu negócio.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,700&family=Outfit:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+
+<style>
+/* ═══════════════════════════════════════════
+   RESET & VARIABLES
+   ═══════════════════════════════════════════ */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --bg-deep: #06080f;
+  --bg-surface: #0c1020;
+  --bg-card: #111628;
+  --bg-card-hover: #161d35;
+  --border: rgba(99, 130, 255, 0.08);
+  --border-hover: rgba(99, 130, 255, 0.2);
+  --accent: #3b7dff;
+  --accent-light: #60a5fa;
+  --accent-glow: rgba(59, 125, 255, 0.15);
+  --cyan: #22d3ee;
+  --text-primary: #e8ecf4;
+  --text-secondary: #7a8bb5;
+  --text-muted: #4a5578;
+  --font-display: 'Outfit', sans-serif;
+  --font-body: 'DM Sans', sans-serif;
+  --font-mono: 'JetBrains Mono', monospace;
+}
+
+html { scroll-behavior: smooth; }
+
+body {
+  font-family: var(--font-body);
+  background: var(--bg-deep);
+  color: var(--text-primary);
+  overflow-x: hidden;
+  -webkit-font-smoothing: antialiased;
+}
+
+a { text-decoration: none; color: inherit; }
+img { max-width: 100%; display: block; }
+
+/* ═══════════════════════════════════════════
+   BACKGROUND EFFECTS
+   ═══════════════════════════════════════════ */
+body::before {
+  content: '';
+  position: fixed;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background:
+    radial-gradient(ellipse 80% 60% at 10% 0%, rgba(59, 125, 255, 0.06) 0%, transparent 60%),
+    radial-gradient(ellipse 60% 50% at 90% 100%, rgba(34, 211, 238, 0.04) 0%, transparent 60%);
+  pointer-events: none;
+  z-index: 0;
+}
+
+.grid-bg {
+  position: fixed;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background-image:
+    linear-gradient(rgba(99, 130, 255, 0.03) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(99, 130, 255, 0.03) 1px, transparent 1px);
+  background-size: 60px 60px;
+  mask-image: radial-gradient(ellipse 70% 70% at 50% 30%, black 20%, transparent 70%);
+  -webkit-mask-image: radial-gradient(ellipse 70% 70% at 50% 30%, black 20%, transparent 70%);
+  pointer-events: none;
+  z-index: 0;
+}
+
+/* ═══════════════════════════════════════════
+   LAYOUT
+   ═══════════════════════════════════════════ */
+.wrapper {
+  position: relative;
+  z-index: 1;
+}
+
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 32px;
+}
+
+section { padding: 100px 0; }
+
+/* ═══════════════════════════════════════════
+   NAVIGATION
+   ═══════════════════════════════════════════ */
+nav {
+  position: fixed;
+  top: 0; left: 0; right: 0;
+  z-index: 100;
+  padding: 20px 0;
+  transition: all 0.4s ease;
+}
+
+nav.scrolled {
+  background: rgba(6, 8, 15, 0.85);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border-bottom: 1px solid var(--border);
+  padding: 14px 0;
+}
+
+.nav-inner {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 32px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.logo {
+  font-family: var(--font-display);
+  font-size: 26px;
+  font-weight: 800;
+  letter-spacing: -0.5px;
+  color: var(--text-primary);
+}
+
+.logo span { color: var(--cyan); }
+
+.nav-links {
+  display: flex;
+  gap: 36px;
+  list-style: none;
+}
+
+.nav-links a {
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--text-secondary);
+  transition: color 0.3s;
+  letter-spacing: 0.3px;
+}
+
+.nav-links a:hover { color: var(--text-primary); }
+
+.nav-cta {
+  font-family: var(--font-body);
+  font-size: 14px;
+  font-weight: 600;
+  color: #fff !important;
+  background: var(--accent);
+  padding: 10px 24px;
+  border-radius: 8px;
+  transition: all 0.3s;
+}
+
+.nav-cta:hover {
+  background: #2b6ae6;
+  transform: translateY(-1px);
+  box-shadow: 0 8px 24px rgba(59, 125, 255, 0.25);
+}
+
+.hamburger {
+  display: none;
+  flex-direction: column;
+  gap: 5px;
+  cursor: pointer;
+  background: none;
+  border: none;
+  padding: 8px;
+}
+
+.hamburger span {
+  width: 24px;
+  height: 2px;
+  background: var(--text-secondary);
+  border-radius: 2px;
+  transition: all 0.3s;
+}
+
+/* ═══════════════════════════════════════════
+   HERO
+   ═══════════════════════════════════════════ */
+.hero {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  padding-top: 100px;
+  position: relative;
+}
+
+.hero-content { max-width: 760px; }
+
+.hero-tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-family: var(--font-mono);
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--cyan);
+  background: rgba(34, 211, 238, 0.06);
+  border: 1px solid rgba(34, 211, 238, 0.12);
+  padding: 8px 18px;
+  border-radius: 100px;
+  margin-bottom: 32px;
+  letter-spacing: 0.5px;
+}
+
+.hero-tag .dot {
+  width: 6px; height: 6px;
+  background: var(--cyan);
+  border-radius: 50%;
+  animation: pulse-dot 2s ease-in-out infinite;
+}
+
+@keyframes pulse-dot {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.4; transform: scale(0.8); }
+}
+
+.hero h1 {
+  font-family: var(--font-display);
+  font-size: clamp(42px, 6vw, 72px);
+  font-weight: 800;
+  line-height: 1.05;
+  letter-spacing: -2px;
+  margin-bottom: 28px;
+}
+
+.hero h1 .gradient-text {
+  background: linear-gradient(135deg, var(--accent-light) 0%, var(--cyan) 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.hero-desc {
+  font-size: 19px;
+  line-height: 1.7;
+  color: var(--text-secondary);
+  max-width: 600px;
+  margin-bottom: 44px;
+}
+
+.hero-desc strong {
+  color: var(--text-primary);
+  font-weight: 600;
+}
+
+.hero-actions {
+  display: flex;
+  gap: 16px;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+.btn-primary {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  background: var(--accent);
+  color: #fff;
+  padding: 16px 32px;
+  border-radius: 10px;
+  font-family: var(--font-body);
+  font-size: 16px;
+  font-weight: 600;
+  border: none;
+  cursor: pointer;
+  transition: all 0.35s ease;
+  box-shadow: 0 4px 20px rgba(59, 125, 255, 0.2);
+}
+
+.btn-primary:hover {
+  background: #2b6ae6;
+  transform: translateY(-2px);
+  box-shadow: 0 8px 32px rgba(59, 125, 255, 0.35);
+}
+
+.btn-secondary {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  color: var(--text-secondary);
+  padding: 16px 28px;
+  border-radius: 10px;
+  font-size: 16px;
+  font-weight: 500;
+  border: 1px solid var(--border);
+  transition: all 0.3s;
+  background: transparent;
+  cursor: pointer;
+  font-family: var(--font-body);
+}
+
+.btn-secondary:hover {
+  color: var(--text-primary);
+  border-color: var(--border-hover);
+  background: rgba(99, 130, 255, 0.04);
+}
+
+/* Floating orb decoration */
+.hero-orb {
+  position: absolute;
+  right: -5%;
+  top: 25%;
+  width: 420px;
+  height: 420px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(59, 125, 255, 0.08) 0%, transparent 70%);
+  filter: blur(60px);
+  animation: float-orb 8s ease-in-out infinite;
+  pointer-events: none;
+}
+
+@keyframes float-orb {
+  0%, 100% { transform: translate(0, 0); }
+  50% { transform: translate(-20px, 30px); }
+}
+
+/* ═══════════════════════════════════════════
+   METRICS BAR
+   ═══════════════════════════════════════════ */
+.metrics {
+  padding: 40px 0 80px;
+  border-top: 1px solid var(--border);
+  border-bottom: 1px solid var(--border);
+}
+
+.metrics-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 32px;
+  text-align: center;
+}
+
+.metric-item h3 {
+  font-family: var(--font-display);
+  font-size: 44px;
+  font-weight: 800;
+  color: var(--text-primary);
+  letter-spacing: -1px;
+}
+
+.metric-item h3 .accent { color: var(--accent-light); }
+
+.metric-item p {
+  font-size: 14px;
+  color: var(--text-muted);
+  margin-top: 6px;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+/* ═══════════════════════════════════════════
+   SECTION HEADER (reusable)
+   ═══════════════════════════════════════════ */
+.section-header {
+  text-align: center;
+  max-width: 640px;
+  margin: 0 auto 64px;
+}
+
+.section-label {
+  font-family: var(--font-mono);
+  font-size: 13px;
+  color: var(--accent-light);
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  margin-bottom: 16px;
+  font-weight: 500;
+}
+
+.section-title {
+  font-family: var(--font-display);
+  font-size: clamp(32px, 4vw, 46px);
+  font-weight: 800;
+  letter-spacing: -1.5px;
+  line-height: 1.1;
+  margin-bottom: 18px;
+}
+
+.section-subtitle {
+  font-size: 17px;
+  color: var(--text-secondary);
+  line-height: 1.6;
+}
+
+/* ═══════════════════════════════════════════
+   SERVICES
+   ═══════════════════════════════════════════ */
+.services-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 24px;
+}
+
+.service-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  padding: 40px 32px;
+  transition: all 0.4s ease;
+  position: relative;
+  overflow: hidden;
+}
+
+.service-card::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 2px;
+  background: linear-gradient(90deg, transparent, var(--accent), transparent);
+  opacity: 0;
+  transition: opacity 0.4s;
+}
+
+.service-card:hover {
+  background: var(--bg-card-hover);
+  border-color: var(--border-hover);
+  transform: translateY(-4px);
+}
+
+.service-card:hover::before { opacity: 1; }
+
+.service-icon {
+  width: 52px;
+  height: 52px;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 24px;
+  font-size: 24px;
+}
+
+.service-icon.web { background: rgba(59, 125, 255, 0.1); }
+.service-icon.mobile { background: rgba(34, 211, 238, 0.1); }
+.service-icon.consult { background: rgba(168, 85, 247, 0.1); }
+.service-icon.cloud { background: rgba(16, 185, 129, 0.1); }
+.service-icon.data { background: rgba(251, 191, 36, 0.1); }
+.service-icon.security { background: rgba(239, 68, 68, 0.1); }
+
+.service-card h3 {
+  font-family: var(--font-display);
+  font-size: 22px;
+  font-weight: 700;
+  margin-bottom: 12px;
+  letter-spacing: -0.5px;
+}
+
+.service-card p {
+  font-size: 15px;
+  color: var(--text-secondary);
+  line-height: 1.65;
+}
+
+.service-tags {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  margin-top: 20px;
+}
+
+.service-tags span {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--text-muted);
+  background: rgba(99, 130, 255, 0.05);
+  border: 1px solid var(--border);
+  padding: 4px 10px;
+  border-radius: 6px;
+}
+
+/* ═══════════════════════════════════════════
+   PROCESS / HOW WE WORK
+   ═══════════════════════════════════════════ */
+.process-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 20px;
+  position: relative;
+}
+
+.process-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  padding: 36px 28px;
+  text-align: center;
+  position: relative;
+  transition: all 0.3s;
+}
+
+.process-card:hover {
+  border-color: var(--border-hover);
+  transform: translateY(-2px);
+}
+
+.step-number {
+  font-family: var(--font-display);
+  font-size: 52px;
+  font-weight: 900;
+  background: linear-gradient(135deg, rgba(59, 125, 255, 0.2), transparent);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  margin-bottom: 16px;
+  line-height: 1;
+}
+
+.process-card h3 {
+  font-family: var(--font-display);
+  font-size: 18px;
+  font-weight: 700;
+  margin-bottom: 10px;
+}
+
+.process-card p {
+  font-size: 14px;
+  color: var(--text-secondary);
+  line-height: 1.6;
+}
+
+/* ═══════════════════════════════════════════
+   TECH STACK
+   ═══════════════════════════════════════════ */
+.tech-marquee {
+  overflow: hidden;
+  padding: 40px 0;
+  border-top: 1px solid var(--border);
+  border-bottom: 1px solid var(--border);
+  position: relative;
+}
+
+.tech-marquee::before,
+.tech-marquee::after {
+  content: '';
+  position: absolute;
+  top: 0; bottom: 0;
+  width: 120px;
+  z-index: 2;
+  pointer-events: none;
+}
+
+.tech-marquee::before {
+  left: 0;
+  background: linear-gradient(90deg, var(--bg-deep), transparent);
+}
+
+.tech-marquee::after {
+  right: 0;
+  background: linear-gradient(270deg, var(--bg-deep), transparent);
+}
+
+.marquee-track {
+  display: flex;
+  gap: 48px;
+  animation: scroll-marquee 30s linear infinite;
+  width: max-content;
+}
+
+@keyframes scroll-marquee {
+  0% { transform: translateX(0); }
+  100% { transform: translateX(-50%); }
+}
+
+.tech-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-family: var(--font-mono);
+  font-size: 15px;
+  color: var(--text-muted);
+  white-space: nowrap;
+  transition: color 0.3s;
+}
+
+.tech-item:hover { color: var(--text-secondary); }
+
+.tech-dot {
+  width: 8px; height: 8px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+/* ═══════════════════════════════════════════
+   CTA SECTION
+   ═══════════════════════════════════════════ */
+.cta-section {
+  padding: 80px 0;
+}
+
+.cta-box {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: 24px;
+  padding: 80px 60px;
+  text-align: center;
+  position: relative;
+  overflow: hidden;
+}
+
+.cta-box::before {
+  content: '';
+  position: absolute;
+  top: -50%; left: -50%;
+  width: 200%; height: 200%;
+  background: radial-gradient(circle at 50% 120%, rgba(59, 125, 255, 0.06) 0%, transparent 50%);
+  pointer-events: none;
+}
+
+.cta-box h2 {
+  font-family: var(--font-display);
+  font-size: clamp(30px, 4vw, 44px);
+  font-weight: 800;
+  letter-spacing: -1.5px;
+  margin-bottom: 16px;
+  position: relative;
+}
+
+.cta-box p {
+  font-size: 18px;
+  color: var(--text-secondary);
+  max-width: 520px;
+  margin: 0 auto 36px;
+  line-height: 1.6;
+  position: relative;
+}
+
+.cta-box .btn-primary { position: relative; }
+
+/* ═══════════════════════════════════════════
+   FOOTER
+   ═══════════════════════════════════════════ */
+footer {
+  border-top: 1px solid var(--border);
+  padding: 48px 0;
+}
+
+.footer-inner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 20px;
+}
+
+.footer-logo {
+  font-family: var(--font-display);
+  font-size: 22px;
+  font-weight: 800;
+}
+
+.footer-logo span { color: var(--cyan); }
+
+.footer-info {
+  font-size: 13px;
+  color: var(--text-muted);
+  text-align: center;
+}
+
+.footer-links {
+  display: flex;
+  gap: 24px;
+}
+
+.footer-links a {
+  font-size: 13px;
+  color: var(--text-muted);
+  transition: color 0.3s;
+}
+
+.footer-links a:hover { color: var(--text-secondary); }
+
+/* ═══════════════════════════════════════════
+   ANIMATIONS (scroll reveal)
+   ═══════════════════════════════════════════ */
+.reveal {
+  opacity: 0;
+  transform: translateY(30px);
+  transition: opacity 0.7s ease, transform 0.7s ease;
+}
+
+.reveal.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.reveal-delay-1 { transition-delay: 0.1s; }
+.reveal-delay-2 { transition-delay: 0.2s; }
+.reveal-delay-3 { transition-delay: 0.3s; }
+.reveal-delay-4 { transition-delay: 0.4s; }
+.reveal-delay-5 { transition-delay: 0.5s; }
+
+/* Hero specific entrance */
+.hero-content > * {
+  opacity: 0;
+  transform: translateY(20px);
+  animation: hero-enter 0.8s ease forwards;
+}
+
+.hero-content > *:nth-child(1) { animation-delay: 0.1s; }
+.hero-content > *:nth-child(2) { animation-delay: 0.25s; }
+.hero-content > *:nth-child(3) { animation-delay: 0.4s; }
+.hero-content > *:nth-child(4) { animation-delay: 0.55s; }
+
+@keyframes hero-enter {
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* ═══════════════════════════════════════════
+   RESPONSIVE
+   ═══════════════════════════════════════════ */
+@media (max-width: 1024px) {
+  .services-grid { grid-template-columns: repeat(2, 1fr); }
+  .process-grid { grid-template-columns: repeat(2, 1fr); }
+  .metrics-grid { grid-template-columns: repeat(2, 1fr); gap: 24px; }
+  .hero-orb { display: none; }
+}
+
+@media (max-width: 768px) {
+  section { padding: 72px 0; }
+  .container { padding: 0 20px; }
+  
+  .nav-links { display: none; }
+  .hamburger { display: flex; }
+  
+  .nav-links.open {
+    display: flex;
+    flex-direction: column;
+    position: absolute;
+    top: 100%; left: 0; right: 0;
+    background: rgba(6, 8, 15, 0.95);
+    backdrop-filter: blur(20px);
+    padding: 24px 32px;
+    gap: 20px;
+    border-bottom: 1px solid var(--border);
+  }
+  
+  .services-grid { grid-template-columns: 1fr; }
+  .process-grid { grid-template-columns: 1fr; }
+  .metrics-grid { grid-template-columns: repeat(2, 1fr); }
+  
+  .hero h1 { letter-spacing: -1px; }
+  
+  .hero-actions {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+  
+  .cta-box { padding: 48px 24px; }
+  
+  .footer-inner {
+    flex-direction: column;
+    text-align: center;
+  }
+}
+
+@media (max-width: 480px) {
+  .metrics-grid { grid-template-columns: 1fr; }
+  .metric-item { padding: 16px 0; }
+}
+</style>
+</head>
+<body>
+
+<div class="grid-bg"></div>
+
+<div class="wrapper">
+
+  <!-- ═══ NAVIGATION ═══ -->
+  <nav id="navbar">
+    <div class="nav-inner">
+      <div class="logo">Code<span>ENN</span></div>
+      <ul class="nav-links" id="navLinks">
+        <li><a href="#servicos">Serviços</a></li>
+        <li><a href="#processo">Processo</a></li>
+        <li><a href="#tecnologias">Tecnologias</a></li>
+        <li><a href="mailto:contato@codeenn.com" class="nav-cta">Fale Conosco</a></li>
+      </ul>
+      <button class="hamburger" id="hamburger" aria-label="Menu">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+  </nav>
+
+  <!-- ═══ HERO ═══ -->
+  <section class="hero">
+    <div class="container">
+      <div class="hero-content">
+        <div class="hero-tag">
+          <span class="dot"></span>
+          Inovação e Tecnologia
+        </div>
+        <h1>Desenvolvimento e<br><span class="gradient-text">Consultoria em TI</span></h1>
+        <p class="hero-desc">
+          Somos a engrenagem que falta para impulsionar o seu negócio. Criamos <strong>soluções de software sob medida</strong> e <strong>aplicações móveis</strong> robustas, aliadas a uma consultoria estratégica de excelência.
+        </p>
+        <div class="hero-actions">
+          <a href="mailto:contato@codeenn.com" class="btn-primary">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+            Fale com um Especialista
+          </a>
+
+        </div>
+      </div>
+    </div>
+    <div class="hero-orb"></div>
+  </section>
+
+
+
+  <!-- ═══ SERVICES ═══ -->
+  <section id="servicos">
+    <div class="container">
+      <div class="section-header reveal">
+        <p class="section-label">Serviços</p>
+        <h2 class="section-title">Soluções completas para<br>o seu negócio digital</h2>
+        <p class="section-subtitle">Da concepção ao deploy, atuamos em todas as frentes para transformar suas ideias em produtos digitais de alto impacto.</p>
+      </div>
+
+      <div class="services-grid">
+        <div class="service-card reveal">
+          <div class="service-icon web">💻</div>
+          <h3>Sites & Sistemas Web</h3>
+          <p>Sites institucionais, landing pages e plataformas web escaláveis e responsivas, desde portais corporativos até sistemas complexos de gestão interna.</p>
+          <div class="service-tags">
+            <span>React</span><span>Node.js</span><span>APIs REST</span>
+          </div>
+        </div>
+
+        <div class="service-card reveal reveal-delay-1">
+          <div class="service-icon mobile">📱</div>
+          <h3>Apps Mobile</h3>
+          <p>Aplicativos nativos e multiplataforma com experiências fluidas, performance otimizada e design moderno.</p>
+          <div class="service-tags">
+            <span>Flutter</span><span>React Native</span><span>iOS/Android</span>
+          </div>
+        </div>
+
+        <div class="service-card reveal reveal-delay-2">
+          <div class="service-icon consult">🧠</div>
+          <h3>Consultoria em TI</h3>
+          <p>Diagnóstico técnico, arquitetura de sistemas e estratégia digital para otimizar processos e reduzir custos.</p>
+          <div class="service-tags">
+            <span>Arquitetura</span><span>DevOps</span><span>Estratégia</span>
+          </div>
+        </div>
+
+
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══ PROCESS ═══ -->
+  <section id="processo">
+    <div class="container">
+      <div class="section-header reveal">
+        <p class="section-label">Processo</p>
+        <h2 class="section-title">Como trabalhamos</h2>
+        <p class="section-subtitle">Uma metodologia ágil e transparente que garante entregas com qualidade e no prazo.</p>
+      </div>
+
+      <div class="process-grid">
+        <div class="process-card reveal">
+          <div class="step-number">01</div>
+          <h3>Discovery</h3>
+          <p>Mapeamos necessidades, objetivos de negócio e requisitos técnicos do projeto.</p>
+        </div>
+        <div class="process-card reveal reveal-delay-1">
+          <div class="step-number">02</div>
+          <h3>Design & Protótipo</h3>
+          <p>Criamos wireframes e protótipos interativos validados antes de uma linha de código.</p>
+        </div>
+        <div class="process-card reveal reveal-delay-2">
+          <div class="step-number">03</div>
+          <h3>Desenvolvimento</h3>
+          <p>Sprints semanais com entregas incrementais, testes automatizados e code review.</p>
+        </div>
+        <div class="process-card reveal reveal-delay-3">
+          <div class="step-number">04</div>
+          <h3>Deploy & Suporte</h3>
+          <p>Publicação em produção, monitoramento contínuo e suporte pós-lançamento.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══ TECH MARQUEE ═══ -->
+  <section id="tecnologias" style="padding: 0;">
+    <div class="tech-marquee">
+      <div class="marquee-track">
+        <div class="tech-item"><span class="tech-dot" style="background:#61dafb"></span>React</div>
+        <div class="tech-item"><span class="tech-dot" style="background:#3178c6"></span>TypeScript</div>
+        <div class="tech-item"><span class="tech-dot" style="background:#68a063"></span>Node.js</div>
+        <div class="tech-item"><span class="tech-dot" style="background:#02569b"></span>Flutter</div>
+        <div class="tech-item"><span class="tech-dot" style="background:#4db33d"></span>MongoDB</div>
+        <div class="tech-item"><span class="tech-dot" style="background:#336791"></span>PostgreSQL</div>
+        <div class="tech-item"><span class="tech-dot" style="background:#ff9900"></span>AWS</div>
+        <div class="tech-item"><span class="tech-dot" style="background:#2496ed"></span>Docker</div>
+        <div class="tech-item"><span class="tech-dot" style="background:#f7df1e"></span>JavaScript</div>
+        <div class="tech-item"><span class="tech-dot" style="background:#000"></span>Next.js</div>
+        <div class="tech-item"><span class="tech-dot" style="background:#764abc"></span>Redux</div>
+        <div class="tech-item"><span class="tech-dot" style="background:#e34f26"></span>HTML5</div>
+        <div class="tech-item"><span class="tech-dot" style="background:#06b6d4"></span>Tailwind CSS</div>
+        <div class="tech-item"><span class="tech-dot" style="background:#4285f4"></span>Firebase</div>
+        <!-- Duplicate for seamless loop -->
+        <div class="tech-item"><span class="tech-dot" style="background:#61dafb"></span>React</div>
+        <div class="tech-item"><span class="tech-dot" style="background:#3178c6"></span>TypeScript</div>
+        <div class="tech-item"><span class="tech-dot" style="background:#68a063"></span>Node.js</div>
+        <div class="tech-item"><span class="tech-dot" style="background:#02569b"></span>Flutter</div>
+        <div class="tech-item"><span class="tech-dot" style="background:#4db33d"></span>MongoDB</div>
+        <div class="tech-item"><span class="tech-dot" style="background:#336791"></span>PostgreSQL</div>
+        <div class="tech-item"><span class="tech-dot" style="background:#ff9900"></span>AWS</div>
+        <div class="tech-item"><span class="tech-dot" style="background:#2496ed"></span>Docker</div>
+        <div class="tech-item"><span class="tech-dot" style="background:#f7df1e"></span>JavaScript</div>
+        <div class="tech-item"><span class="tech-dot" style="background:#000"></span>Next.js</div>
+        <div class="tech-item"><span class="tech-dot" style="background:#764abc"></span>Redux</div>
+        <div class="tech-item"><span class="tech-dot" style="background:#e34f26"></span>HTML5</div>
+        <div class="tech-item"><span class="tech-dot" style="background:#06b6d4"></span>Tailwind CSS</div>
+        <div class="tech-item"><span class="tech-dot" style="background:#4285f4"></span>Firebase</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══ CTA ═══ -->
+  <section class="cta-section">
+    <div class="container">
+      <div class="cta-box reveal">
+        <h2>Pronto para transformar<br>sua <span class="gradient-text">ideia em realidade</span>?</h2>
+        <p>Conte-nos sobre o seu projeto. Vamos analisar suas necessidades e apresentar a melhor solução para o seu negócio.</p>
+        <a href="mailto:contato@codeenn.com" class="btn-primary">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+          Iniciar Conversa
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══ FOOTER ═══ -->
+  <footer>
+    <div class="container">
+      <div class="footer-inner">
+        <div class="footer-logo">Code<span>ENN</span></div>
+        <div class="footer-info">
+          &copy; 2026 CodeENN &middot; CNPJ: 63.721.800/0001-11 &middot; Todos os direitos reservados.
+        </div>
+        <div class="footer-links">
+          <a href="mailto:contato@codeenn.com">contato@codeenn.com</a>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+</div>
+
+<script>
+// Navbar scroll effect
+const navbar = document.getElementById('navbar');
+window.addEventListener('scroll', () => {
+  navbar.classList.toggle('scrolled', window.scrollY > 50);
+});
+
+// Mobile menu
+const hamburger = document.getElementById('hamburger');
+const navLinks = document.getElementById('navLinks');
+hamburger.addEventListener('click', () => {
+  navLinks.classList.toggle('open');
+});
+
+// Close mobile menu on link click
+navLinks.querySelectorAll('a').forEach(link => {
+  link.addEventListener('click', () => navLinks.classList.remove('open'));
+});
+
+// Scroll reveal
+const observer = new IntersectionObserver((entries) => {
+  entries.forEach(entry => {
+    if (entry.isIntersecting) {
+      entry.target.classList.add('visible');
+    }
+  });
+}, { threshold: 0.1, rootMargin: '0px 0px -40px 0px' });
+
+document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+</script>
+
+</body>
+</html>
